@@ -29,7 +29,9 @@
 #include "BulletCollision/CollisionShapes/btShapeHull.h"
 #include <stdio.h>
 #include <time.h>
-
+#include "../../dev/bullet-2.80-rev2531/Demos/OpenGL/GL_ShapeDrawer.h"
+//#include "../../dev/bullet-2.80-rev2531/Demos/OpenGL/GlutStuff.h"
+#include "../../dev/bullet-2.80-rev2531/Demos/OpenGL/GLDebugDrawer.h"
 
 
 typedef struct
@@ -306,6 +308,54 @@ int compute_speed(SBullet* bullet, SSimulation simParam, double* scores)
   }
   return 0;
 }
+
+
+
+
+//SBullet* bullet
+void gDemoApplication::displayCallback(void) {
+  int i;
+  btScalar m[16];
+  btVector3 worldBoundsMin;
+  btVector3 worldBoundsMax;
+  GLDebugDrawer* debugDrawer;
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+  glDisable(GL_LIGHTING);
+  
+  // collisionWorld->getBroadphase()->getBroadphaseAabb(worldBoundsMin,worldBoundsMax);
+  
+
+  // for (i=0;i<numObjects;i++)
+  //   {
+		
+  //     objects[i].getWorldTransform().getOpenGLMatrix( m );
+  //     m_shapeDrawer->drawOpenGL(m, objects[i].getCollisionShape(), 
+  // 				btVector3(1,1,1), getDebugMode(), 
+  // 				worldBoundsMin, worldBoundsMax);
+  //   }
+
+  // collisionWorld->getDispatchInfo().m_debugDraw = &debugDrawer;
+	
+  // collisionWorld->debugDrawWorld();
+
+
+
+  // glDisable(GL_TEXTURE_2D);
+  // for (i=0;i<numObjects;i++) {
+  //   collisionWorld->debugDrawObject(objects[i].getWorldTransform(), 
+  // 				    objects[i].getCollisionShape(), 
+  // 				    btVector3(1,1,0));
+  //   }
+
+  bullet->dynamicsWorld->setDebugDrawer(debugDrawer);
+  bullet->dynamicsWorld->debugDrawWorld();
+
+  glFlush();
+  glutSwapBuffers();
+
+}
+
 
 
 
