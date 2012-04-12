@@ -178,11 +178,7 @@ int create_scene(SBullet* bullet, SScene scene)
 
     bullet->dynamicsWorld->addRigidBody(body);
 
-    // Get centerpoint of object, which we'll need to shift the objects' shapes
-    convexHull->getBoundingSphere(center, radius);
-
   }
-  ///////////////////////
 
   return 0;
 }
@@ -199,7 +195,7 @@ int compute_speed(SBullet* bullet, SSimulation simParam, double* scores)
 
   /// Do some simulation
   for (i=0;i<simParam.recordIdx[simParam.nRecordTimes - 1] + 1;i++) {
-    bullet->dynamicsWorld->stepSimulation(btScalar(simParam.stepSize), 0);
+    bullet->dynamicsWorld->stepSimulation(btScalar(simParam.stepSize), 10);
 
     bool f_record = false;
     for (k=0; k<simParam.nRecordTimes; k++) {
