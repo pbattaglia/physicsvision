@@ -106,7 +106,7 @@ static void draw(void)
 static void timer(void)
 {
   float dtime = gtime;
-  gtime = glutGet(GLUT_ELAPSED_TIME) / 3000.0;
+  gtime = glutGet(GLUT_ELAPSED_TIME) / 10000.0;
   dtime = gtime - dtime;
 
   if(bullet->dynamicsWorld) {
@@ -261,10 +261,20 @@ int main(int argc, char** argv)
     5., 1., 2.,
     3., 1., 2.,
 
+    // obj 5
+    1., -1., 0.,
+    3., -1., 0.,
+    3., -1., 2.,
+    1., -1., 2.,
+    1., 1., 0.,
+    3., 1., 0.,
+    3., 1., 2.,
+    1., 1., 2.,
+
   };
 
   // Number of objects
-  myscene.nObj = 4;
+  myscene.nObj = 5;
 
   // Number of vertices per object
   myscene.nVertPerObj = (int*)malloc(myscene.nObj * sizeof(int));
@@ -272,6 +282,7 @@ int main(int argc, char** argv)
   myscene.nVertPerObj[1] = 8;
   myscene.nVertPerObj[2] = 8;
   myscene.nVertPerObj[3] = 8;
+  myscene.nVertPerObj[4] = 8;
 
   // Count up vertices
   nVert = 0;
