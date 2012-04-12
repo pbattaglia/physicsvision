@@ -62,9 +62,9 @@ int create_scene(SBullet* bullet, SScene scene)
   // Ground
   //
   // Create the ground collision geometry
-  bullet->groundShape = new btBoxShape(btVector3(btScalar(50.), 
-						 btScalar(50.), 
-						 btScalar(50.)));
+  bullet->groundShape = new btBoxShape(btVector3(btScalar(50.f), 
+						 btScalar(50.f), 
+						 btScalar(50.f)));
   
   // Container for all of the collision shapes
   bullet->collisionShapes.push_back(bullet->groundShape);
@@ -74,7 +74,7 @@ int create_scene(SBullet* bullet, SScene scene)
   groundTransform.setIdentity();
   groundTransform.setOrigin(btVector3(0, -51, 0));
 
-  btScalar mass(0.);
+  btScalar mass(0.f);
   
   //rigidbody is dynamic if and only if mass is non zero, otherwise
   //static
@@ -122,6 +122,8 @@ int create_scene(SBullet* bullet, SScene scene)
       convexHull0->addPoint(point);
     }
 
+
+    //////////////////////////////////////////////////////////////////
     // //create a hull approximation (not necessary for now)
     // btShapeHull* hull = new btShapeHull(convexHull0);
     // btScalar margin = convexHull0->getMargin();
@@ -130,10 +132,11 @@ int create_scene(SBullet* bullet, SScene scene)
     // for (j=0; j<hull->numVertices(); j++) {
     //   convexHull1->addPoint(hull->getVertexPointer()[j]); 
     // }
+    //////////////////////////////////////////////////////////////////
 
     // Get centerpoint of object, which we'll need to shift the objects' shapes
-    btVector3 center(0., 0., 0.);
-    btScalar radius(0.);
+    btVector3 center(0.f, 0.f, 0.f);
+    btScalar radius(0.f);
     convexHull0->getBoundingSphere(center, radius);
 
 

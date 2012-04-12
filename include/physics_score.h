@@ -17,10 +17,7 @@
 // Modified by Peter Battaglia (2012) from HelloWorld.cpp example in Bullet SDK
 
 
-/* Command line use: 
 
-
-*/
 
 
 #include "btBulletDynamicsCommon.h"
