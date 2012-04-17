@@ -51,10 +51,12 @@ static void draw(void)
 
   // Clear buffers
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  //glColor3f(1.f, 1.f, 1.f);
-  debugDrawer->setDebugMode(1);
+
+  // Draw
   bullet->dynamicsWorld->setDebugDrawer(debugDrawer);
   bullet->dynamicsWorld->debugDrawWorld();
+  
+  // Swap the buffers
   glutSwapBuffers();
 }
 
@@ -83,10 +85,8 @@ int main(int argc, char** argv)
   SBullet* mybullet = new SBullet;
   double* scores;
 
-  //shapeDrawer = new GL_ShapeDrawer();
-  //shapeDrawer->enableTexture(true);
   debugDrawer = new GLDebugDrawer();
-
+  debugDrawer->setDebugMode(1);
 
   int nVert;
 
@@ -94,7 +94,7 @@ int main(int argc, char** argv)
   double vertices[] = {
 
     // obj 1
-    0., -1., 0.,
+    0., -1., 3+0.,
     0., -1., 2.,
     2., -1., 2.,
     2., -1., 0.,
