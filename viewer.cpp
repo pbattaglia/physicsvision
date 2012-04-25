@@ -74,7 +74,7 @@ static void timer(void)
 }
 
 
-int main(int argc, char** argv)
+int main(int argc, char* argv[])
 {
   /////////////////////////////////////////////////////////////////////
   //
@@ -85,63 +85,76 @@ int main(int argc, char** argv)
   SBullet* mybullet = new SBullet;
   double* scores;
 
+  int debugMode = 3;
+  if (argc > 1) {
+    debugMode = *argv[1] - '0';
+  }
   debugDrawer = new GLDebugDrawer();
-  debugDrawer->setDebugMode(1);
+  debugDrawer->setDebugMode(debugMode);
 
   int nVert;
+
+  float dx0 = -1.;
+  float dz0 = 3.;
+
+  float dx1 = -1.;
+  float dz1 = -9.;
+
+  float dx2 = -3.5;
+  float dz2 = -8.;
 
   // Some test objects
   double vertices[] = {
 
     // obj 1
-    0., -1., 3+0.,
-    0., -1., 2.,
-    2., -1., 2.,
-    2., -1., 0.,
-    0., 1., 0.,
-    2., 1., 0.,
-    2., 1., 2.,
-    0., 1., 2.,
+    0.+dx0, -1., 0.+dz0,
+    0.+dx0, -1., 2.+dz0,
+    2.+dx0, -1., 2.+dz0,
+    2.+dx0, -1., 0.+dz0,
+    0.+dx0, 1., 0.+dz0,
+    2.+dx0, 1., 0.+dz0,
+    2.+dx0, 1., 2.+dz0,
+    0.+dx0, 1., 2.+dz0,
 
     // obj 2
-    0., 2., 0.,
-    2., 2., 0.,
-    2., 2., 2.,
-    0., 2., 2.,
-    0., 4., 0.,
-    2., 4., 0.,
-    2., 4., 2.,
-    0., 4., 2.,
+    1.+dx0, -1., 0.+dz0,
+    3.+dx0, -1., 0.+dz0,
+    3.+dx0, -1., 2.+dz0,
+    1.+dx0, -1., 2.+dz0,
+    1.+dx0, 1., 0.+dz0,
+    3.+dx0, 1., 0.+dz0,
+    3.+dx0, 1., 2.+dz0,
+    1.+dx0, 1., 2.+dz0,
 
     // obj 3
-    3., 4., 0.,
-    5., 4., 0.,
-    5., 4., 2.,
-    3., 4., 2.,
-    3., 6., 0.,
-    5., 6., 0.,
-    5., 6., 2.,
-    3., 6., 2.,
+    1.+dx1, 2., 0.+dz1,
+    3.+dx1, 2., 0.+dz1,
+    3.+dx1, 2., 2.+dz1,
+    1.+dx1, 2., 2.+dz1,
+    1.+dx1, 4., 0.+dz1,
+    3.+dx1, 4., 0.+dz1,
+    3.+dx1, 4., 2.+dz1,
+    1.+dx1, 4., 2.+dz1,
 
     // obj 4
-    3., -1., 0.,
-    5., -1., 0.,
-    5., -1., 2.,
-    3., -1., 2.,
-    3., 1., 0.,
-    5., 1., 0.,
-    5., 1., 2.,
-    3., 1., 2.,
+    1.+dx1, -1., 0.+dz1,
+    3.+dx1, -1., 0.+dz1,
+    3.+dx1, -1., 2.+dz1,
+    1.+dx1, -1., 2.+dz1,
+    1.+dx1, 1., 0.+dz1,
+    3.+dx1, 1., 0.+dz1,
+    3.+dx1, 1., 2.+dz1,
+    1.+dx1, 1., 2.+dz1,
 
     // obj 5
-    1., -1., 0.,
-    3., -1., 0.,
-    3., -1., 2.,
-    1., -1., 2.,
-    1., 1., 0.,
-    3., 1., 0.,
-    3., 1., 2.,
-    1., 1., 2.,
+    -2.+dx2, -1., 0.+dz2,
+    0.+dx2, -1., 0.+dz2,
+    0.+dx2, -1., 2.+dz2,
+    -2.+dx2, -1., 2.+dz2,
+    -2.+dx2, 1., 0.+dz2,
+    0.+dx2, 1., 0.+dz2,
+    0.+dx2, 1., 2.+dz2,
+    -2.+dx2, 1., 2.+dz2,
 
   };
 
@@ -203,9 +216,9 @@ int main(int argc, char** argv)
   glEnable(GL_COLOR_MATERIAL);
 
   glMatrixMode(GL_PROJECTION);
-  gluPerspective(30.0, 1.0, 0.1, 1000.0);
+  gluPerspective(40.0, 1.0, 0.1, 1000.0);
   glMatrixMode(GL_MODELVIEW);
-  gluLookAt(1.0, 0.0, 20.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0); 
+  gluLookAt(1.0, 6.0, 20.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0); 
 
 
 
