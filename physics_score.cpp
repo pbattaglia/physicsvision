@@ -24,43 +24,7 @@
 */
 
 
-#include "btBulletDynamicsCommon.h"
-#include "BulletCollision/CollisionShapes/btConvexHullShape.h"
-#include "BulletCollision/CollisionShapes/btShapeHull.h"
-#include <stdio.h>
-#include <time.h>
-#include "../../dev/bullet-2.80-rev2531/Demos/OpenGL/GL_ShapeDrawer.h"
-//#include "../../dev/bullet-2.80-rev2531/Demos/OpenGL/GlutStuff.h"
-#include "../../dev/bullet-2.80-rev2531/Demos/OpenGL/GLDebugDrawer.h"
-
-
-typedef struct
-{
-  int nObj;
-  int* nVertPerObj;
-  double* vertices;
-} SScene;
-
-
-typedef struct
-{
-  double stepSize;
-  int nRecordTimes;
-  int* recordIdx;
-} SSimulation;
-
-
-typedef struct
-{
-  btDefaultCollisionConfiguration* collisionConfiguration;
-  btCollisionDispatcher* dispatcher;
-  btBroadphaseInterface* overlappingPairCache;
-  btSequentialImpulseConstraintSolver* solver;
-  btDiscreteDynamicsWorld* dynamicsWorld;
-  btCollisionShape* groundShape;
-  btAlignedObjectArray<btCollisionShape*> collisionShapes;
-} SBullet;
-
+#include "include/physics_score.h"
 
 
 int create_scene(SBullet* bullet, SScene scene)
@@ -97,9 +61,9 @@ int create_scene(SBullet* bullet, SScene scene)
   // Ground
   //
   // Create the ground collision geometry
-  bullet->groundShape = new btBoxShape(btVector3(btScalar(50.), 
-						 btScalar(50.), 
-						 btScalar(50.)));
+  bullet->groundShape = new btBoxShape(btVector3(btScalar(50.f), 
+						 btScalar(50.f), 
+						 btScalar(50.f)));
   
   // Container for all of the collision shapes
   bullet->collisionShapes.push_back(bullet->groundShape);
@@ -109,7 +73,7 @@ int create_scene(SBullet* bullet, SScene scene)
   groundTransform.setIdentity();
   groundTransform.setOrigin(btVector3(0, -51, 0));
 
-  btScalar mass(0.);
+  btScalar mass(0.f);
   
   //rigidbody is dynamic if and only if mass is non zero, otherwise
   //static
@@ -157,6 +121,8 @@ int create_scene(SBullet* bullet, SScene scene)
       convexHull0->addPoint(point);
     }
 
+
+    //////////////////////////////////////////////////////////////////
     // //create a hull approximation (not necessary for now)
     // btShapeHull* hull = new btShapeHull(convexHull0);
     // btScalar margin = convexHull0->getMargin();
@@ -165,10 +131,11 @@ int create_scene(SBullet* bullet, SScene scene)
     // for (j=0; j<hull->numVertices(); j++) {
     //   convexHull1->addPoint(hull->getVertexPointer()[j]); 
     // }
+    //////////////////////////////////////////////////////////////////
 
     // Get centerpoint of object, which we'll need to shift the objects' shapes
-    btVector3 center(0., 0., 0.);
-    btScalar radius(0.);
+    btVector3 center(0.f, 0.f, 0.f);
+    btScalar radius(0.f);
     convexHull0->getBoundingSphere(center, radius);
 
 
@@ -213,11 +180,7 @@ int create_scene(SBullet* bullet, SScene scene)
 
     bullet->dynamicsWorld->addRigidBody(body);
 
-    // Get centerpoint of object, which we'll need to shift the objects' shapes
-    convexHull->getBoundingSphere(center, radius);
-
   }
-  ///////////////////////
 
   return 0;
 }
@@ -234,7 +197,7 @@ int compute_speed(SBullet* bullet, SSimulation simParam, double* scores)
 
   /// Do some simulation
   for (i=0;i<simParam.recordIdx[simParam.nRecordTimes - 1] + 1;i++) {
-    bullet->dynamicsWorld->stepSimulation(btScalar(simParam.stepSize), 0);
+    bullet->dynamicsWorld->stepSimulation(btScalar(simParam.stepSize), 10);
 
     bool f_record = false;
     for (k=0; k<simParam.nRecordTimes; k++) {
@@ -310,58 +273,6 @@ int compute_speed(SBullet* bullet, SSimulation simParam, double* scores)
 }
 
 
-
-
-//SBullet* bullet
-void gDemoApplication::displayCallback(void) {
-  int i;
-  btScalar m[16];
-  btVector3 worldBoundsMin;
-  btVector3 worldBoundsMax;
-  GLDebugDrawer* debugDrawer;
-
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-  glDisable(GL_LIGHTING);
-  
-  // collisionWorld->getBroadphase()->getBroadphaseAabb(worldBoundsMin,worldBoundsMax);
-  
-
-  // for (i=0;i<numObjects;i++)
-  //   {
-		
-  //     objects[i].getWorldTransform().getOpenGLMatrix( m );
-  //     m_shapeDrawer->drawOpenGL(m, objects[i].getCollisionShape(), 
-  // 				btVector3(1,1,1), getDebugMode(), 
-  // 				worldBoundsMin, worldBoundsMax);
-  //   }
-
-  // collisionWorld->getDispatchInfo().m_debugDraw = &debugDrawer;
-	
-  // collisionWorld->debugDrawWorld();
-
-
-
-  // glDisable(GL_TEXTURE_2D);
-  // for (i=0;i<numObjects;i++) {
-  //   collisionWorld->debugDrawObject(objects[i].getWorldTransform(), 
-  // 				    objects[i].getCollisionShape(), 
-  // 				    btVector3(1,1,0));
-  //   }
-
-  bullet->dynamicsWorld->setDebugDrawer(debugDrawer);
-  bullet->dynamicsWorld->debugDrawWorld();
-
-  glFlush();
-  glutSwapBuffers();
-
-}
-
-
-
-
-
-
-
 int destroy_scene(SBullet* bullet)
 {
   int i, j;
@@ -405,141 +316,5 @@ int destroy_scene(SBullet* bullet)
   //the array goes out of scope
   bullet->collisionShapes.clear();
 
-  return 0;
-}
-
-
-
-
-
-
-int main(int argc, char** argv)
-{
-  /////////////////////////////////////////////////////////////////////
-  //
-  // The first part of main() demonstrates how to set the necessary parameters
-
-  SScene myscene;
-  SSimulation mysim;
-  SBullet* mybullet = new SBullet;
-  double* scores;
-
-  int nVert;
-
-  // Some test objects
-  double vertices[] = {
-
-    // obj 1
-    0., -1., 0.,
-    2., -1., 0.,
-    2., -1., 2.,
-    0., -1., 2.,
-    0., 1., 0.,
-    2., 1., 0.,
-    2., 1., 2.,
-    0., 1., 2.,
-
-    // obj 2
-    0., 2., 0.,
-    2., 2., 0.,
-    2., 2., 2.,
-    0., 2., 2.,
-    0., 4., 0.,
-    2., 4., 0.,
-    2., 4., 2.,
-    0., 4., 2.,
-
-    // obj 3
-    3., 4., 0.,
-    5., 4., 0.,
-    5., 4., 2.,
-    3., 4., 2.,
-    3., 6., 0.,
-    5., 6., 0.,
-    5., 6., 2.,
-    3., 6., 2.,
-
-    // obj 4
-    3., -1., 0.,
-    5., -1., 0.,
-    5., -1., 2.,
-    3., -1., 2.,
-    3., 1., 0.,
-    5., 1., 0.,
-    5., 1., 2.,
-    3., 1., 2.,
-
-  };
-
-  // Number of objects
-  myscene.nObj = 4;
-
-  // Number of vertices per object
-  myscene.nVertPerObj = (int*)malloc(myscene.nObj * sizeof(int));
-  myscene.nVertPerObj[0] = 8;
-  myscene.nVertPerObj[1] = 8;
-  myscene.nVertPerObj[2] = 8;
-  myscene.nVertPerObj[3] = 8;
-
-  // Count up vertices
-  nVert = 0;
-  for (int i=0; i < myscene.nObj; i++) {
-    nVert += myscene.nVertPerObj[i];
-  }
-  // memcpy the vertex data to the myscene struct
-  myscene.vertices = (double *)malloc(nVert * 3 * sizeof(double));
-  memcpy(myscene.vertices, vertices, nVert * 3 * sizeof(double));
-
-  // Simulation parameters
-  mysim.stepSize = 1.0 / 60.0f;
-  mysim.nRecordTimes = 5;
-  mysim.recordIdx = (int*)malloc(mysim.nRecordTimes * sizeof(int));
-  mysim.recordIdx[0] = 0;
-  mysim.recordIdx[1] = 15;
-  mysim.recordIdx[2] = 30;
-  mysim.recordIdx[3] = 45;
-  mysim.recordIdx[4] = 60;
-  scores = (double*)malloc(myscene.nObj * mysim.nRecordTimes * 2 * sizeof(double));
-
-  /////////////////////////////////////////////////////////////////////
-
-
-
-  /////////////////////////////////////////////////////////////////////
-  //
-  // This is the important stuff, that will be called by Yibiao's code
-  //
-
-  // Set up scene
-  create_scene(mybullet, myscene);
-  
-  // Do the simulation and record the data
-  compute_speed(mybullet, mysim, scores);
-  
-  // Destroy scene resources
-  destroy_scene(mybullet);
-  /////////////////////////////////////////////////////////////////////
-
-
-
-  /////////////////////////////////////////////////////////////////////
-  //
-  // Print the output, to see if it works
-  //
-
-  printf("\n-------------------------------------\n");
-  printf("Results\n");
-  printf("-------------------------------------\n");
-
-  for (int k=0; k<mysim.nRecordTimes; k++) {
-    printf("\nRecord step %i\n", mysim.recordIdx[k]);
-    for (int j=0; j<myscene.nObj; j++) {
-      int idx = k * myscene.nObj * 2 + j * 2;
-      printf("Obj %i:  linvel %.3f ,  angvel= %.3f\n", j, 
-	     scores[idx], scores[idx + 1]);
-    }
-  }
-  
-  
   return 0;
 }
