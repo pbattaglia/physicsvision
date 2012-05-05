@@ -7,20 +7,20 @@ CFLAGS =  $(SYSDIR) -I$(INCDIR)
 LIBS = -lBulletCollision -lBulletDynamics -lLinearMath
 GLLIBS = -lGL -lGLU -lglut
 
-_DEPS = physics_score.h GLDebugDrawer.h
+_DEPS = physics_score.h
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
 
-_OBJ = physics_score.o GLDebugDrawer.o
+_OBJ = physics_score.o
 OBJ = $(patsubst %,$(OBJDIR)/%,$(_OBJ))
 
 
-$(OBJDIR)/%.o: %.cpp $(DEPS)
+$(OBJDIR)/%.o: %.cpp $(INCDIR)/%.h
 	$(CC) -g -c -o $@ $< $(CFLAGS)
 
-main: main.cpp $(OBJ)
+main: main.cpp $(OBJ) 
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
-viewer: viewer.cpp $(OBJ)
+viewer: viewer.cpp $(OBJ) $(OBJDIR)/GLDebugDrawer.o
 	$(CC) -g -o $@ $^ $(CFLAGS) $(LIBS) $(GLLIBS)
 
 .PHONY: clean
